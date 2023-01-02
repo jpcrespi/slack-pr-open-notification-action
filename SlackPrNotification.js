@@ -13,8 +13,12 @@ var compareBranchName = process.env.PULL_REQUEST_COMPARE_BRANCH_NAME;
 var baseBranchOwner = process.env.PULL_REQUEST_BASE_BRANCH_OWNER;
 var baseBranchName = process.env.PULL_REQUEST_BASE_BRANCH_NAME;
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
+var githubAllowedIds = process.env.GITHUB_ALLOWED_IDS ? process.env.GITHUB_ALLOWED_IDS.split(",") : []
+var sendUserGithubIds = process.env.PULL_REQUEST_REQUESTED_REVIEWERS ? process.env.PULL_REQUEST_REQUESTED_REVIEWERS.map(function (reviewer) {
+    return reviewer.id
+}) : []
 var sendUserIDMentions = process.env.SEND_USER_ID_MENTIONS ? process.env.SEND_USER_ID_MENTIONS.split(",").map(function (id) {
-    return "<@" + id + ">";
+    if (sendUserGithubIds.indexOf(id)) return "<@" + id + ">"; else return "";
 }).join(" ") : "";
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(function (id) {
     return "<!subteam^" + id + ">";

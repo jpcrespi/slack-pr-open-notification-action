@@ -11,6 +11,7 @@ jobs:
     - name: Notify slack pr open
       env: 
         SLACK_WEBHOOK_URL : ${{ secrets.SLACK_WEBHOOK_URL }}
+        GITHUB_ALLOWED_IDS: ${{ secrets.GITHUB_ALLOWED_IDS }}
         PULL_REQUEST_NUMBER : ${{ github.event.pull_request.number }}
         PULL_REQUEST_TITLE : ${{ github.event.pull_request.title }}
         PULL_REQUEST_AUTHOR_NAME : ${{ github.event.pull_request.user.login }}
@@ -21,6 +22,7 @@ jobs:
         PULL_REQUEST_COMPARE_BRANCH_NAME : ${{ github.event.pull_request.head.ref }}
         PULL_REQUEST_BASE_BRANCH_OWNER: ${{ github.event.pull_request.base.repo.owner.login }}
         PULL_REQUEST_BASE_BRANCH_NAME : ${{ github.event.pull_request.base.ref }}
+        PULL_REQUEST_REQUESTED_REVIEWERS: ${{ github.event.pull_request.requested_reviewers }}
         IS_SEND_HERE_MENTION : true
         MAKE_PRETTY : false
         MAKE_COMPACT : false
