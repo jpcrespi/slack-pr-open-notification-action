@@ -23,7 +23,7 @@ var sendUserGithubIds = process.env.PULL_REQUEST_REQUESTED_REVIEWERS ? process.e
     return reviewer.id
 }) : []
 
-idPairs.array.forEach(element => {
+idPairs.forEach(element => {
     console.log("IDPAIRS: " + element)
 });
 
@@ -39,7 +39,7 @@ var sendUserIDMentions = idPairs ? idPairs.map(function (pair) {
 }).join(" ") : "";
 
 console.log("LABELS: " + prLabels)
-prLabels.array.forEach(element => {
+prLabels.forEach(element => {
     console.log("LABEL: " + element)
 });
 
