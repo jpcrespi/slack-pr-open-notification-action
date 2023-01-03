@@ -23,6 +23,14 @@ var sendUserGithubIds = process.env.PULL_REQUEST_REQUESTED_REVIEWERS ? process.e
     return reviewer.id
 }) : []
 
+idPairs.array.forEach(element => {
+    console.log("IDPAIRS: " + element)
+});
+
+sendUserGithubIds.forEach(element => {
+    console.log("REVIEWER: " + element)
+})
+
 var sendUserIDMentions = idPairs ? idPairs.map(function (pair) {
     var split = pair.split("=")
     var githubId = split[0]
@@ -30,10 +38,17 @@ var sendUserIDMentions = idPairs ? idPairs.map(function (pair) {
     return sendUserGithubIds.indexOf(githubId) != -1 ? "<@" + slackId + ">" : ""
 }).join(" ") : "";
 
+console.log("LABELS: " + prLabels)
+prLabels.array.forEach(element => {
+    console.log("LABEL: " + element)
+});
+
 var priority =
     prLabels.indexOf("High Priority") != -1 ? "🔴" :
         prLabels.indexOf("Medium Priority") != -1 ? "🟡" :
             prLabels.indexOf("Low Priority") != -1 ? "🟢" : "";
+
+console.log("PRIORITY: " + priority)
 
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(function (id) {
     return "<!subteam^" + id + ">";
@@ -102,15 +117,15 @@ else if (makeCompact) {
         blocks: [
             {
                 type: "section",
-                block_id: "commit_title",
                 text: {
                     type: "mrkdwn",
-                    text: priority + " " + mentions + " *<" + prUrl + "|" + prTitle + ">* #" + prNum + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + " By: *" + authorName + "*"
+                    text: priority + " " + mentions + "PR#*<" + prUrl + "|" + prNum + ">* #" + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + " By: *" + authorName + "*"
                 }
             }
         ]
     };
-    axios_1["default"].post(url, message);
+    console.log(message)
+    //axios_1["default"].post(url, message);
 }
 else {
     var message = {
