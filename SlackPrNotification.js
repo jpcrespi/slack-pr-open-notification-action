@@ -17,12 +17,11 @@ var baseBranchOwner = pr.base.repo.owner.login
 var baseBranchName = pr.base.ref
 var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
 var prLabels = (pr.labels || []).map(element => element.name)
-var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").reduce((map, element) => {
+var idPairs = new Map();
+(process.env.GITHUB_SLACK_ID || "").split(",").forEach(element => {
     var kv = element.split("=")
-    map[kv[0]] = kv[1]
-    return map
-}, {})
-
+    idPairs[kv[0]] = kv[1]
+})
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : ""
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : ""
 var sendUserIDMentions = prReviewers.map(reviewer => idPairs[reviewer] != undefined ? "<@" + idPairs[reviewer] + ">" : "").join(" ")
