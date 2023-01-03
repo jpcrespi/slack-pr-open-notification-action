@@ -100,7 +100,6 @@ else if (makeCompact) {
         priority,
         mentions,
         "PR#*<" + prUrl + "|" + prNum + ">*",
-        "*" + prTitle + "*",
         "from",
         "*" + compareBranchText + "*",
         "to",
