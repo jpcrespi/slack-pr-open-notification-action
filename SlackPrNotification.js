@@ -105,7 +105,7 @@ else if (makeCompact) {
                 block_id: "commit_title",
                 text: {
                     type: "mrkdwn",
-                    text: priority + " " + mentions + " *<" + prUrl + "|" + prTitle + ">* #" + prNum + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + " | Author: *" + authorName + "*"
+                    text: priority + " " + mentions + " *<" + prUrl + "|" + prTitle + ">* #" + prNum + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + " By: *" + authorName + "*"
                 }
             }
         ]
