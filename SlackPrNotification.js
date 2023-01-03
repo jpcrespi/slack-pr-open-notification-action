@@ -95,7 +95,18 @@ if (makePretty) {
     axios_1["default"].post(url, message)
 }
 else if (makeCompact) {
-    var text = priority + " " + mentions + "PR#*<" + prUrl + "|" + prNum + ">* from *" + compareBranchText + "* to *" + baseBranchText + "* by: *" + authorName + "*"
+    var text = [
+        priority,
+        mentions,
+        "PR#*<" + prUrl + "|" + prNum + ">*",
+        "*" + prTitle + "*",
+        "from",
+        "*" + compareBranchText + "*",
+        "to",
+        "*" + baseBranchText + "*",
+        "by",
+        "*" + authorName + "*"
+    ].join(" ")
     var message = {
         blocks: [
             {
@@ -108,10 +119,8 @@ else if (makeCompact) {
         ]
     }
     console.log("TEXT: " + text)
-    //axios_1["default"].post(url, message)
-
-}
-else {
+    axios_1["default"].post(url, message)
+} else {
     var message = {
         blocks: [
             {
