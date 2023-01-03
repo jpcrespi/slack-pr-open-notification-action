@@ -17,12 +17,11 @@ var baseBranchOwner = pr.base.repo.owner.login;
 var baseBranchName = pr.base.ref;
 var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
 var prLabels = (pr.labels || []).map(element => element.name)
-var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").reduce(function (map, element) {
+var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").reduce((map, element) => {
     var kv = element.split("=")
     map[kv[0]] = kv[1];
     return map;
 }, {});
-
 
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : "";
@@ -42,18 +41,9 @@ var baseBranchText = prFromFork === "true" ? baseBranchOwner + ":" + baseBranchN
 var makePretty = process.env.MAKE_PRETTY.toLowerCase() === "true";
 var makeCompact = process.env.MAKE_COMPACT.toLowerCase() === "true";
 
-idPairs.forEach(element => {
-    console.log("IDPAIRS: " + element)
-});
-
-prReviewers.forEach(element => {
-    console.log("REVIEWER: " + element)
-})
-
-prLabels.forEach(element => {
-    console.log("LABEL: " + element)
-});
-
+console.log("IDPAIRS: " + idPairs)
+console.log("REVIEWERS: " + prReviewers)
+console.log("LABELS: " + prLabels)
 console.log("PRIORITY: " + priority)
 
 if (makePretty) {
