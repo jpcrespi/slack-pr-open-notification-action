@@ -25,7 +25,7 @@ var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").reduce((map, elemen
 
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : ""
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : ""
-var sendUserIDMentions = prReviewers.map(element => idPairs[element] != undefined ? "<@" + idPairs[element] + ">" : "").join(" ")
+var sendUserIDMentions = prReviewers.map(reviewer => idPairs[reviewer] != undefined ? "<@" + idPairs[reviewer] + ">" : "").join(" ")
 var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions
 
 var priority =
@@ -41,7 +41,7 @@ var baseBranchText = prFromFork === "true" ? baseBranchOwner + ":" + baseBranchN
 var makePretty = process.env.MAKE_PRETTY.toLowerCase() === "true"
 var makeCompact = process.env.MAKE_COMPACT.toLowerCase() === "true"
 
-console.log("IDPAIRS: " + idPairs)
+console.log("IDPAIRS: " + JSON.stringify(idPairs))
 console.log("REVIEWERS: " + prReviewers)
 console.log("LABELS: " + prLabels)
 console.log("PRIORITY: " + priority)
