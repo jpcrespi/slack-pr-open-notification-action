@@ -2,16 +2,15 @@
 
 var axios_1 = require("axios");
 
-var pr = process.env.PULL_REQUEST;
 var url = process.env.SLACK_WEBHOOK_URL;
+var pr = JSON.parse(process.env.PULL_REQUEST);
 
 var prNum = pr.number || 0;
 var prTitle = pr.title || "Title missing";
 var prUrl = pr.url || "https://github.com";
 var prBody = pr.body || "No description provided.";
-var prUser = pr.user || {}
-var authorName = prUser.login || "Unknown user";
-var authorIconUrl = prUser.avatar_url;
+var authorName = pr.user.login || "Unknown user";
+var authorIconUrl = pr.user.avatar_url;
 var compareBranchOwner = pr.head.repo.owner.login;
 var compareBranchName = pr.head.ref;
 var baseBranchOwner = pr.base.repo.owner.login;
