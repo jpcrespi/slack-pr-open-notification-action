@@ -1,12 +1,13 @@
 "use strict";
 exports.__esModule = true;
 var axios_1 = require("axios");
+var pr = process.env.PULL_REQUEST;
 var url = process.env.SLACK_WEBHOOK_URL;
 var prNum = process.env.PULL_REQUEST_NUMBER;
 var prTitle = process.env.PULL_REQUEST_TITLE;
 var prUrl = process.env.PULL_REQUEST_URL;
 var prBody = process.env.PULL_REQUEST_BODY || "No description provided.";
-var prLabels = process.env.PULL_REQUEST_LABELS ? process.env.PULL_REQUEST_LABELS : []
+var prLabels = process.env.PULL_REQUEST_LABELS || []
 var authorName = process.env.PULL_REQUEST_AUTHOR_NAME;
 var authorIconUrl = process.env.PULL_REQUEST_AUTHOR_ICON_URL;
 var compareBranchOwner = process.env.PULL_REQUEST_COMPARE_BRANCH_OWNER;
@@ -20,6 +21,8 @@ var idPairs = process.env.GITHUB_SLACK_IDS ? process.env.GITHUB_SLACK_IDS.split(
 var sendUserGithubIds = process.env.PULL_REQUEST_REQUESTED_REVIEWERS ? process.env.PULL_REQUEST_REQUESTED_REVIEWERS.map(function (reviewer) {
     return reviewer.id
 }) : []
+
+console.log("PR: " * pr)
 
 idPairs.forEach(element => {
     console.log("IDPAIRS: " + element)
