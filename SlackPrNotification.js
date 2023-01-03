@@ -13,13 +13,20 @@ var compareBranchName = process.env.PULL_REQUEST_COMPARE_BRANCH_NAME;
 var baseBranchOwner = process.env.PULL_REQUEST_BASE_BRANCH_OWNER;
 var baseBranchName = process.env.PULL_REQUEST_BASE_BRANCH_NAME;
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
-var githubAllowedIds = process.env.GITHUB_ALLOWED_IDS ? process.env.GITHUB_ALLOWED_IDS.split(",") : []
+// get github and slack ids from env var in this format { githubuser1=USERIDSLACK1,githubuser2=USERIDSLACK2 }
+var idPairs = process.env.GITHUB_SLACK_IDS ? process.env.GITHUB_SLACK_IDS.split(",") : []
+// get reviewers github ids from PR
 var sendUserGithubIds = process.env.PULL_REQUEST_REQUESTED_REVIEWERS ? process.env.PULL_REQUEST_REQUESTED_REVIEWERS.map(function (reviewer) {
     return reviewer.id
 }) : []
-var sendUserIDMentions = process.env.SEND_USER_ID_MENTIONS ? process.env.SEND_USER_ID_MENTIONS.split(",").map(function (id) {
-    if (sendUserGithubIds.indexOf(id)) return "<@" + id + ">"; else return "";
+
+var sendUserIDMentions = idPairs ? idPairs.map(function (pair) {
+    var split = pair.split("=")
+    var githubId = split[0]
+    var slackId = split[1]
+    if (sendUserGithubIds.indexOf(githubId) != -1) return "<@" + slackId + ">"; else return "";
 }).join(" ") : "";
+
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(function (id) {
     return "<!subteam^" + id + ">";
 }).join(" ") : "";

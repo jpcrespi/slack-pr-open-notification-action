@@ -20,7 +20,7 @@ jobs:
     - name: Notify slack pr open
       env: 
         SLACK_WEBHOOK_URL : ${{ secrets.SLACK_WEBHOOK_URL }}
-        GITHUB_ALLOWED_IDS: ${{ secrets.GITHUB_ALLOWED_IDS }}
+        GITHUB_SLACK_IDS: ${{ secrets.GITHUB_SLACK_IDS }}
         PULL_REQUEST_NUMBER : ${{ github.event.pull_request.number }}
         PULL_REQUEST_TITLE : ${{ github.event.pull_request.title }}
         PULL_REQUEST_AUTHOR_NAME : ${{ github.event.pull_request.user.login }}
@@ -76,10 +76,10 @@ Throw mentions to a specific user.
 Enter your Slack user ID separated by commas.
 Please google how to find out your user ID.
 
-#### GITHUB_ALLOWED_IDS
+#### GITHUB_SLACK_IDS
 **string (Optional)**
-A list of github user ids which will be compared to requested reviewers in the PR
-for slack tagging
+A list of "github,slack" user ids which will be compared to requested reviewers in the PR
+for slack tagging in the following format "githubuser1=USERIDSLACK1,githubuser2=USERIDSLACK2"
 
 #### SEND_GROUP_ID_MENTIONS
 **string (Optional)**  
