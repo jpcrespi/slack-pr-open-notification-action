@@ -6,9 +6,7 @@ var prNum = process.env.PULL_REQUEST_NUMBER;
 var prTitle = process.env.PULL_REQUEST_TITLE;
 var prUrl = process.env.PULL_REQUEST_URL;
 var prBody = process.env.PULL_REQUEST_BODY || "No description provided.";
-var prLabels = process.env.PULL_REQUEST_LABELS ? process.env.PULL_REQUEST_LABELS.map(function (label) {
-    return label.name
-}) : []
+var prLabels = process.env.PULL_REQUEST_LABELS ? process.env.PULL_REQUEST_LABELS : []
 var authorName = process.env.PULL_REQUEST_AUTHOR_NAME;
 var authorIconUrl = process.env.PULL_REQUEST_AUTHOR_ICON_URL;
 var compareBranchOwner = process.env.PULL_REQUEST_COMPARE_BRANCH_OWNER;
