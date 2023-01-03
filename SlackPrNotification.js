@@ -26,7 +26,7 @@ var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").reduce((map, elemen
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : ""
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : ""
 var sendUserIDMentions = prReviewers.map(element => idPairs[element] != undefined ? "<@" + idPairs[element] + ">" : "").join(" ")
-var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions + "\n"
+var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions
 
 var priority =
     prLabels.indexOf("High Priority") != -1 ? "🔴" :
@@ -45,6 +45,7 @@ console.log("IDPAIRS: " + idPairs)
 console.log("REVIEWERS: " + prReviewers)
 console.log("LABELS: " + prLabels)
 console.log("PRIORITY: " + priority)
+console.log("MENTIONS: " + mentions)
 
 if (makePretty) {
     var message = {
@@ -105,12 +106,14 @@ else if (makeCompact) {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: priority + " " + mentions + "PR#*<" + prUrl + "|" + prNum + ">* #" + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + " By: *" + authorName + "*"
+                    text: priority + " " + mentions + "PR#*<" + prUrl + "|" + prNum + ">* from *" + compareBranchText + "* to *" + baseBranchText + "*." + " By: *" + authorName + "*"
                 }
             }
         ]
     }
-    axios_1["default"].post(url, message)
+    console.log(priority + " " + mentions + "PR#*<" + prUrl + "|" + prNum + ">* #" + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + " By: *" + authorName + "*")
+    //axios_1["default"].post(url, message)
+
 }
 else {
     var message = {
