@@ -9,8 +9,9 @@ var prNum = pr.number || 0;
 var prTitle = pr.title || "Title missing";
 var prUrl = pr.url || "https://github.com";
 var prBody = pr.body || "No description provided.";
-var authorName = pr.user.login || "Unknown user";
-var authorIconUrl = pr.user.avatar_url;
+var prUser = pr.user || {}
+var authorName = prUser.login || "Unknown user";
+var authorIconUrl = prUser.avatar_url;
 var compareBranchOwner = pr.head.repo.owner.login;
 var compareBranchName = pr.head.ref;
 var baseBranchOwner = pr.base.repo.owner.login;
@@ -24,7 +25,7 @@ var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").map(element => {
 
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : "";
-var sendUserIDMentions = prReviewers.map(element => idPairs[element] = !undefined ? "<@" + slackId + ">" : "")
+var sendUserIDMentions = prReviewers.map(element => idPairs[element] != undefined ? "<@" + slackId + ">" : "")
 var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions + "\n";
 
 var priority =
