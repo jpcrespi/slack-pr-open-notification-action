@@ -1,6 +1,6 @@
 "use strict";
 
-import axios_1 from "axios";
+var axios_1 = require("axios");
 
 var pr = process.env.PULL_REQUEST;
 var url = process.env.SLACK_WEBHOOK_URL;
