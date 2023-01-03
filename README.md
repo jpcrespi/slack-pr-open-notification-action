@@ -20,24 +20,13 @@ jobs:
     - uses: jpcrespi/slack-pr-open-notification-action@master
       env: 
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
-        PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
-        PULL_REQUEST_AUTHOR_NAME: ${{ github.event.pull_request.user.login }}
-        PULL_REQUEST_AUTHOR_ICON_URL: ${{ github.event.pull_request.user.avatar_url }}
-        PULL_REQUEST_URL: ${{ github.event.pull_request.html_url }}
-        PULL_REQUEST_BODY: ${{ github.event.pull_request.body }}
-        PULL_REQUEST_LABELS: ${{ github.event.pull_request.labels }}
-        PULL_REQUEST_COMPARE_BRANCH_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
-        PULL_REQUEST_COMPARE_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
-        PULL_REQUEST_BASE_BRANCH_OWNER: ${{ github.event.pull_request.base.repo.owner.login }}
-        PULL_REQUEST_BASE_BRANCH_NAME: ${{ github.event.pull_request.base.ref }}
-        PULL_REQUEST_REQUESTED_REVIEWERS: ${{ github.event.pull_request.requested_reviewers }}
-        IS_SEND_HERE_MENTION: true
-        MAKE_PRETTY: false
-        MAKE_COMPACT: false
-        IS_PR_FROM_FORK: false
+        PULL_REQUEST: ${{ toJson(github.event.pull_request) }}
         GITHUB_SLACK_IDS: githubuser1=SLACKUSERID1,githubuser2=SLACKUSERID2
         SEND_GROUP_ID_MENTIONS: GROUPIDDDD,GGGGROUPID
+        IS_SEND_HERE_MENTION: false
+        IS_PR_FROM_FORK: false
+        MAKE_PRETTY : false
+        MAKE_COMPACT : true
 ```
 
 ### Arguments

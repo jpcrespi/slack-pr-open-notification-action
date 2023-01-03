@@ -1,66 +1,57 @@
 "use strict";
-exports.__esModule = true;
-var axios_1 = require("axios");
+
+import axios_1 from "axios";
+
 var pr = process.env.PULL_REQUEST;
 var url = process.env.SLACK_WEBHOOK_URL;
-var prNum = process.env.PULL_REQUEST_NUMBER;
-var prTitle = process.env.PULL_REQUEST_TITLE;
-var prUrl = process.env.PULL_REQUEST_URL;
-var prBody = process.env.PULL_REQUEST_BODY || "No description provided.";
-var prLabels = process.env.PULL_REQUEST_LABELS || []
-var authorName = process.env.PULL_REQUEST_AUTHOR_NAME;
-var authorIconUrl = process.env.PULL_REQUEST_AUTHOR_ICON_URL;
-var compareBranchOwner = process.env.PULL_REQUEST_COMPARE_BRANCH_OWNER;
-var compareBranchName = process.env.PULL_REQUEST_COMPARE_BRANCH_NAME;
-var baseBranchOwner = process.env.PULL_REQUEST_BASE_BRANCH_OWNER;
-var baseBranchName = process.env.PULL_REQUEST_BASE_BRANCH_NAME;
-var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
-// get github and slack ids from env var in this format { githubuser1=USERIDSLACK1,githubuser2=USERIDSLACK2 }
-var idPairs = process.env.GITHUB_SLACK_IDS ? process.env.GITHUB_SLACK_IDS.split(",") : []
-// get reviewers github ids from PR
-var sendUserGithubIds = process.env.PULL_REQUEST_REQUESTED_REVIEWERS ? process.env.PULL_REQUEST_REQUESTED_REVIEWERS.map(function (reviewer) {
-    return reviewer.id
-}) : []
 
-console.log("PR: " * pr)
-
-idPairs.forEach(element => {
-    console.log("IDPAIRS: " + element)
-});
-
-sendUserGithubIds.forEach(element => {
-    console.log("REVIEWER: " + element)
+var prNum = pr.number || 0;
+var prTitle = pr.title || "Title missing";
+var prUrl = pr.url || "https://github.com";
+var prBody = pr.body || "No description provided.";
+var authorName = pr.user.login || "Unknown user";
+var authorIconUrl = pr.user.avatar_url;
+var compareBranchOwner = pr.head.repo.owner.login;
+var compareBranchName = pr.head.ref;
+var baseBranchOwner = pr.base.repo.owner.login;
+var baseBranchName = pr.base.ref;
+var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
+var prLabels = (pr.labels || []).map(element => element.name)
+var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").map(element => {
+    var element = pair.split("=")
+    return [element[0], element[1]]
 })
 
-var sendUserIDMentions = idPairs ? idPairs.map(function (pair) {
-    var split = pair.split("=")
-    var githubId = split[0]
-    var slackId = split[1]
-    return sendUserGithubIds.indexOf(githubId) != -1 ? "<@" + slackId + ">" : ""
-}).join(" ") : "";
-
-console.log("LABELS: " + prLabels)
-prLabels.forEach(element => {
-    console.log("LABEL: " + element)
-});
+var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
+var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : "";
+var sendUserIDMentions = prReviewers.map(element => idPairs[element] = !undefined ? "<@" + slackId + ">" : "")
+var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions + "\n";
 
 var priority =
     prLabels.indexOf("High Priority") != -1 ? "🔴" :
         prLabels.indexOf("Medium Priority") != -1 ? "🟡" :
             prLabels.indexOf("Low Priority") != -1 ? "🟢" : "";
 
-console.log("PRIORITY: " + priority)
-
-var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(function (id) {
-    return "<!subteam^" + id + ">";
-}).join(" ") : "";
-
-var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions + "\n";
 var prFromFork = process.env.IS_PR_FROM_FORK;
 var compareBranchText = prFromFork === "true" ? compareBranchOwner + ":" + compareBranchName : compareBranchName;
 var baseBranchText = prFromFork === "true" ? baseBranchOwner + ":" + baseBranchName : baseBranchName;
 var makePretty = process.env.MAKE_PRETTY.toLowerCase() === "true"; //Priority is pretty > compact > normal
 var makeCompact = process.env.MAKE_COMPACT.toLowerCase() === "true";
+
+idPairs.forEach(element => {
+    console.log("IDPAIRS: " + element)
+});
+
+prReviewers.forEach(element => {
+    console.log("REVIEWER: " + element)
+})
+
+prLabels.forEach(element => {
+    console.log("LABEL: " + element)
+});
+
+console.log("PRIORITY: " + priority)
+
 if (makePretty) {
     var message = {
         attachments: [
