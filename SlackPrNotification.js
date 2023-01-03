@@ -17,10 +17,11 @@ var baseBranchOwner = pr.base.repo.owner.login;
 var baseBranchName = pr.base.ref;
 var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
 var prLabels = (pr.labels || []).map(element => element.name)
-var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").map(element => {
+var idPairs = GITHUB_SLACK_ID.split(",").reduce(function (map, element) {
     var kv = element.split("=")
-    return [kv[0], kv[1]]
-})
+    map[kv[0]] = kv[1];
+    return map;
+}, {});
 
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : "";
@@ -116,7 +117,7 @@ else if (makeCompact) {
             }
         ]
     };
-    console.log(message)
+    console.log(priority + " " + mentions + "PR#*<" + prUrl + "|" + prNum + ">* #" + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + " By: *" + authorName + "*")
     //axios_1["default"].post(url, message);
 }
 else {
