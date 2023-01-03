@@ -31,6 +31,7 @@ var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions
 var prFromFork = process.env.IS_PR_FROM_FORK
 var compareBranchText = prFromFork === "true" ? compareBranchOwner + ":" + compareBranchName : compareBranchName
 var baseBranchText = prFromFork === "true" ? baseBranchOwner + ":" + baseBranchName : baseBranchName
+var author = idPairs[authorName] != undefined ? "<@" + idPairs[authorName] + ">" : authorName
 
 //Priority is pretty > compact > normal
 var makePretty = process.env.MAKE_PRETTY.toLowerCase() === "true"
@@ -104,8 +105,8 @@ else if (makeCompact) {
         "*" + compareBranchText + "*",
         "to",
         "*" + baseBranchText + "*",
-        "by",
-        "*" + authorName + "*"
+        "opened by",
+        author
     ].join(" ")
     var message = {
         blocks: [
