@@ -20,6 +20,7 @@ jobs:
     - name: Notify slack pr open
       env: 
         SLACK_WEBHOOK_URL : ${{ secrets.SLACK_WEBHOOK_URL }}
+        GITHUB_ALLOWED_IDS: ${{ secrets.GITHUB_ALLOWED_IDS }}
         PULL_REQUEST_NUMBER : ${{ github.event.pull_request.number }}
         PULL_REQUEST_TITLE : ${{ github.event.pull_request.title }}
         PULL_REQUEST_AUTHOR_NAME : ${{ github.event.pull_request.user.login }}
@@ -74,6 +75,11 @@ If set to 'true', it will add the branch owner in front of the branch name ('own
 Throw mentions to a specific user.
 Enter your Slack user ID separated by commas.
 Please google how to find out your user ID.
+
+#### GITHUB_ALLOWED_IDS
+**string (Optional)**
+A list of github user ids which will be compared to requested reviewers in the PR
+for slack tagging
 
 #### SEND_GROUP_ID_MENTIONS
 **string (Optional)**  
