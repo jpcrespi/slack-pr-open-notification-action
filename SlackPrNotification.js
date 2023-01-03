@@ -17,21 +17,17 @@ var baseBranchOwner = pr.base.repo.owner.login
 var baseBranchName = pr.base.ref
 var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
 var prLabels = (pr.labels || []).map(element => element.name)
-var idPairs = {};
-(process.env.GITHUB_SLACK_ID || "").split(",").forEach(element => {
+var idPairs = (process.env.GITHUB_SLACK_IDS || "").split(",").reduce((map, element) => {
     var kv = element.split("=")
-    idPairs[kv[0]] = kv[1]
-})
+    map[kv[0]] = kv[1]
+    return map
+}, {})
+var priorities = { "High Priority": "🔴", "Medium Priority": "🟡", "Low Priority": "🟢" }
+var priority = prLabels.map(element => priorities[element] != undefined ? priorities[element] : "").join(" ")
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : ""
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : ""
 var sendUserIDMentions = prReviewers.map(reviewer => idPairs[reviewer] != undefined ? "<@" + idPairs[reviewer] + ">" : "").join(" ")
 var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions
-
-var priority =
-    prLabels.indexOf("High Priority") != -1 ? "🔴" :
-        prLabels.indexOf("Medium Priority") != -1 ? "🟡" :
-            prLabels.indexOf("Low Priority") != -1 ? "🟢" : ""
-
 var prFromFork = process.env.IS_PR_FROM_FORK
 var compareBranchText = prFromFork === "true" ? compareBranchOwner + ":" + compareBranchName : compareBranchName
 var baseBranchText = prFromFork === "true" ? baseBranchOwner + ":" + baseBranchName : baseBranchName

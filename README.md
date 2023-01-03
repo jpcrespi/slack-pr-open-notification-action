@@ -37,14 +37,35 @@ jobs:
 
 The incoming Slack webhook URL. Create a repository secret named 'SLACK_WEBHOOK_URL' and paste the URL as the value.
 
-#### PULL_REQUEST_*
+#### PULL_REQUEST*
 
-See the following URL: https://developer.github.com/v3/pulls/.
+See the following URL: <https://developer.github.com/v3/pulls/>.
+
+#### GITHUB_SLACK_IDS
+
+**string (Optional)**
+A list of "github,slack" user ids which will be compared to requested reviewers in the PR
+for slack tagging in the following format "githubuser1=SLACKUSERID1,githubuser2=SLACKUSERID2"
+
+#### SEND_GROUP_ID_MENTIONS
+
+**string (Optional)**  
+Throw mentions to a specific group.
+Enter your Slack group ID separated by commas.
+Please google how to find out your group ID.
 
 #### IS_SEND_HERE_MENTION
 
 **boolean (DEFAULT: true)**  
 Whether to include the '@here' Slack mention when sending a message.
+
+#### IS_PR_FROM_FORK
+
+**boolean (DEFAULT: false)**  
+Whether notifications should support PRs from forks. By default, only the branch name is listed when sending a message.  
+If set to 'true', it will add the branch owner in front of the branch name ('owner:branch' vs 'branch'). If this option is used, you may need to enable fork pull request workflows under your repository's Actions settings.
+
+![make_compact and is_pr_fork](https://raw.githubusercontent.com/jun3453/slack-pr-open-notification-action/images/make_compact_fork.png)
 
 #### MAKE_PRETTY
 
@@ -59,24 +80,3 @@ Pretty prints the information. Adds a "See Pull Request" button.
 Smaller visual footprint.
 
 ![make_compact](https://raw.githubusercontent.com/jun3453/slack-pr-open-notification-action/images/make_compact.png)
-
-#### IS_PR_FROM_FORK
-
-**boolean (DEFAULT: false)**  
-Whether notifications should support PRs from forks. By default, only the branch name is listed when sending a message.  
-If set to 'true', it will add the branch owner in front of the branch name ('owner:branch' vs 'branch'). If this option is used, you may need to enable fork pull request workflows under your repository's Actions settings.
-
-![make_compact and is_pr_fork](https://raw.githubusercontent.com/jun3453/slack-pr-open-notification-action/images/make_compact_fork.png)
-
-#### GITHUB_SLACK_IDS
-
-**string (Optional)**
-A list of "github,slack" user ids which will be compared to requested reviewers in the PR
-for slack tagging in the following format "githubuser1=SLACKUSERID1,githubuser2=SLACKUSERID2"
-
-#### SEND_GROUP_ID_MENTIONS
-
-**string (Optional)**  
-Throw mentions to a specific group.
-Enter your Slack group ID separated by commas.
-Please google how to find out your group ID.
