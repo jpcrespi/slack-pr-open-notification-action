@@ -18,8 +18,8 @@ var baseBranchName = pr.base.ref;
 var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
 var prLabels = (pr.labels || []).map(element => element.name)
 var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").map(element => {
-    var element = pair.split("=")
-    return [element[0], element[1]]
+    var kv = element.split("=")
+    return [kv[0], kv[1]]
 })
 
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
