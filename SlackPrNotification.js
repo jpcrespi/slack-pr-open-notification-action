@@ -27,13 +27,13 @@ var sendUserIDMentions = idPairs ? idPairs.map(function (pair) {
     var split = pair.split("=")
     var githubId = split[0]
     var slackId = split[1]
-    if (sendUserGithubIds.indexOf(githubId) != -1) return "<@" + slackId + ">"; else return "";
+    return sendUserGithubIds.indexOf(githubId) != -1 ? "<@" + slackId + ">" : ""
 }).join(" ") : "";
 
 var priority =
     prLabels.indexOf("High Priority") != -1 ? "🔴" :
         prLabels.indexOf("Medium Priority") != -1 ? "🟡" :
-            prLabels.indexOf("Low Priority") != -1 ? "🟢" : ""
+            prLabels.indexOf("Low Priority") != -1 ? "🟢" : "";
 
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(function (id) {
     return "<!subteam^" + id + ">";
