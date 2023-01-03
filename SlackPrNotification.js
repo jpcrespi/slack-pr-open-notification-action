@@ -17,11 +17,12 @@ var baseBranchOwner = pr.base.repo.owner.login;
 var baseBranchName = pr.base.ref;
 var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
 var prLabels = (pr.labels || []).map(element => element.name)
-var idPairs = GITHUB_SLACK_ID.split(",").reduce(function (map, element) {
+var idPairs = (process.env.GITHUB_SLACK_ID || "").split(",").reduce(function (map, element) {
     var kv = element.split("=")
     map[kv[0]] = kv[1];
     return map;
 }, {});
+
 
 var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : "";
@@ -36,7 +37,9 @@ var priority =
 var prFromFork = process.env.IS_PR_FROM_FORK;
 var compareBranchText = prFromFork === "true" ? compareBranchOwner + ":" + compareBranchName : compareBranchName;
 var baseBranchText = prFromFork === "true" ? baseBranchOwner + ":" + baseBranchName : baseBranchName;
-var makePretty = process.env.MAKE_PRETTY.toLowerCase() === "true"; //Priority is pretty > compact > normal
+
+//Priority is pretty > compact > normal
+var makePretty = process.env.MAKE_PRETTY.toLowerCase() === "true";
 var makeCompact = process.env.MAKE_COMPACT.toLowerCase() === "true";
 
 idPairs.forEach(element => {
