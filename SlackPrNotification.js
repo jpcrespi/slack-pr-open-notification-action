@@ -17,7 +17,7 @@ var baseBranchOwner = pr.base.repo.owner.login
 var baseBranchName = pr.base.ref
 var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
 var prLabels = (pr.labels || []).map(element => element.name)
-var idPairs = new Map();
+var idPairs = {};
 (process.env.GITHUB_SLACK_ID || "").split(",").forEach(element => {
     var kv = element.split("=")
     idPairs[kv[0]] = kv[1]
