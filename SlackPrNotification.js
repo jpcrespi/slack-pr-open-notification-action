@@ -6,6 +6,9 @@ var prNum = process.env.PULL_REQUEST_NUMBER;
 var prTitle = process.env.PULL_REQUEST_TITLE;
 var prUrl = process.env.PULL_REQUEST_URL;
 var prBody = process.env.PULL_REQUEST_BODY || "No description provided.";
+var prLabels = process.env.PULL_REQUEST_LABELS ? process.env.PULL_REQUEST_LABELS.map(function (label) {
+    return label.name
+}) : []
 var authorName = process.env.PULL_REQUEST_AUTHOR_NAME;
 var authorIconUrl = process.env.PULL_REQUEST_AUTHOR_ICON_URL;
 var compareBranchOwner = process.env.PULL_REQUEST_COMPARE_BRANCH_OWNER;
@@ -27,9 +30,15 @@ var sendUserIDMentions = idPairs ? idPairs.map(function (pair) {
     if (sendUserGithubIds.indexOf(githubId) != -1) return "<@" + slackId + ">"; else return "";
 }).join(" ") : "";
 
+var priority =
+    prLabels.indexOf("High Priority") != -1 ? "🔴" :
+        prLabels.indexOf("Medium Priority") != -1 ? "🟡" :
+            prLabels.indexOf("Low Priority") != -1 ? "🟢" : ""
+
 var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(function (id) {
     return "<!subteam^" + id + ">";
 }).join(" ") : "";
+
 var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions + "\n";
 var prFromFork = process.env.IS_PR_FROM_FORK;
 var compareBranchText = prFromFork === "true" ? compareBranchOwner + ":" + compareBranchName : compareBranchName;
@@ -47,7 +56,7 @@ if (makePretty) {
                         block_id: "commit_title",
                         text: {
                             type: "mrkdwn",
-                            text: "*<" + prUrl + "|" + prTitle + ">* #" + prNum + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + mentions
+                            text: priority + " *<" + prUrl + "|" + prTitle + ">* #" + prNum + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + mentions
                         }
                     },
                     {
@@ -96,23 +105,8 @@ else if (makeCompact) {
                 block_id: "commit_title",
                 text: {
                     type: "mrkdwn",
-                    text: "*<" + prUrl + "|" + prTitle + ">* #" + prNum + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + mentions
+                    text: priority + " " + mentions + " *<" + prUrl + "|" + prTitle + ">* #" + prNum + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + " | Author: *" + authorName + "*"
                 }
-            },
-            {
-                type: "context",
-                block_id: "committer_meta",
-                elements: [
-                    {
-                        type: "image",
-                        image_url: authorIconUrl,
-                        alt_text: "images"
-                    },
-                    {
-                        type: "mrkdwn",
-                        text: "*" + authorName + "*"
-                    }
-                ]
             }
         ]
     };
@@ -125,7 +119,7 @@ else {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: mentions + "*<" + prUrl + "|" + prTitle + ">*"
+                    text: priority + " " + mentions + "*<" + prUrl + "|" + prTitle + ">*"
                 },
                 accessory: {
                     type: "image",

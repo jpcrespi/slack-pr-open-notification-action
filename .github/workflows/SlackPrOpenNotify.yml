@@ -8,10 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Notify slack pr open
+    - uses: jpcrespi/slack-pr-open-notification-action@v1.1.0
       env: 
         SLACK_WEBHOOK_URL : ${{ secrets.SLACK_WEBHOOK_URL }}
-        GITHUB_SLACK_IDS: ${{ secrets.GITHUB_SLACK_IDS }}
         PULL_REQUEST_NUMBER : ${{ github.event.pull_request.number }}
         PULL_REQUEST_TITLE : ${{ github.event.pull_request.title }}
         PULL_REQUEST_AUTHOR_NAME : ${{ github.event.pull_request.user.login }}
@@ -27,4 +26,3 @@ jobs:
         MAKE_PRETTY : false
         MAKE_COMPACT : false
         IS_PR_FROM_FORK: false
-      uses: manuelg-nimble/slack-pr-open-notification-action@v1.1.0

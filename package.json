@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jun3453/slack-pr-open-notification-action.git"
+    "url": "git+https://github.com/jpcrespi/slack-pr-open-notification-action.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jun3453/slack-pr-open-notification-action/issues"
+    "url": "https://github.com/jpcrespi/slack-pr-open-notification-action/issues"
   },
-  "homepage": "https://github.com/jun3453/slack-pr-open-notification-action#readme"
+  "homepage": "https://github.com/jpcrespi/slack-pr-open-notification-action#readme"
 }

@@ -1,7 +1,7 @@
 # Slack Pull Request Open Notification
 Use GitHub Actions to notify Slack that a pull request has been opened.
 
-![example](https://raw.githubusercontent.com/jun3453/slack-pr-open-notification-action/images/example.png)
+![example](https://raw.githubusercontent.com/jpcrespi/slack-pr-open-notification-action/images/example.png)
 
 ## Usage
 Add the following YAML to your new GitHub Actions workflow:
@@ -17,27 +17,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Notify slack pr open
+    - uses: jpcrespi/slack-pr-open-notification-action@master
       env: 
-        SLACK_WEBHOOK_URL : ${{ secrets.SLACK_WEBHOOK_URL }}
-        GITHUB_SLACK_IDS: ${{ secrets.GITHUB_SLACK_IDS }}
-        PULL_REQUEST_NUMBER : ${{ github.event.pull_request.number }}
-        PULL_REQUEST_TITLE : ${{ github.event.pull_request.title }}
-        PULL_REQUEST_AUTHOR_NAME : ${{ github.event.pull_request.user.login }}
-        PULL_REQUEST_AUTHOR_ICON_URL : ${{ github.event.pull_request.user.avatar_url }}
-        PULL_REQUEST_URL : ${{ github.event.pull_request.html_url }}
-        PULL_REQUEST_BODY : ${{ github.event.pull_request.body }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        PULL_REQUEST_AUTHOR_NAME: ${{ github.event.pull_request.user.login }}
+        PULL_REQUEST_AUTHOR_ICON_URL: ${{ github.event.pull_request.user.avatar_url }}
+        PULL_REQUEST_URL: ${{ github.event.pull_request.html_url }}
+        PULL_REQUEST_BODY: ${{ github.event.pull_request.body }}
+        PULL_REQUEST_LABELS: ${{ github.event.pull_request.labels }}
         PULL_REQUEST_COMPARE_BRANCH_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
-        PULL_REQUEST_COMPARE_BRANCH_NAME : ${{ github.event.pull_request.head.ref }}
+        PULL_REQUEST_COMPARE_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
         PULL_REQUEST_BASE_BRANCH_OWNER: ${{ github.event.pull_request.base.repo.owner.login }}
-        PULL_REQUEST_BASE_BRANCH_NAME : ${{ github.event.pull_request.base.ref }}
-        IS_SEND_HERE_MENTION : true
-        MAKE_PRETTY : false
-        MAKE_COMPACT : false
+        PULL_REQUEST_BASE_BRANCH_NAME: ${{ github.event.pull_request.base.ref }}
+        IS_SEND_HERE_MENTION: true
+        MAKE_PRETTY: false
+        MAKE_COMPACT: false
         IS_PR_FROM_FORK: false
-        SEND_USER_ID_MENTIONS : ABCDE12345,AAABBBCCCC
-        SEND_GROUP_ID_MENTIONS : GROUPIDDDD,GGGGROUPID
-      uses: jun3453/slack-pr-open-notification-action@v1.3.0
+        GITHUB_SLACK_IDS: githubuser1=SLACKUSERID1,githubuser2=SLACKUSERID2
+        SEND_GROUP_ID_MENTIONS: GROUPIDDDD,GGGGROUPID
 ```
 
 ### Arguments
@@ -70,16 +69,10 @@ If set to 'true', it will add the branch owner in front of the branch name ('own
 
 ![make_compact and is_pr_fork](https://raw.githubusercontent.com/jun3453/slack-pr-open-notification-action/images/make_compact_fork.png)
 
-#### SEND_USER_ID_MENTIONS
-**string (Optional)**
-Throw mentions to a specific user.
-Enter your Slack user ID separated by commas.
-Please google how to find out your user ID.
-
 #### GITHUB_SLACK_IDS
 **string (Optional)**
 A list of "github,slack" user ids which will be compared to requested reviewers in the PR
-for slack tagging in the following format "githubuser1=USERIDSLACK1,githubuser2=USERIDSLACK2"
+for slack tagging in the following format "githubuser1=SLACKUSERID1,githubuser2=SLACKUSERID2"
 
 #### SEND_GROUP_ID_MENTIONS
 **string (Optional)**  
