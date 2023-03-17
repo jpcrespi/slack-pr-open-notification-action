@@ -1,58 +1,88 @@
 "use strict";
 
-var axios_1 = require("axios")
-
-var url = process.env.SLACK_WEBHOOK_URL
-var pr = JSON.parse(process.env.PULL_REQUEST)
+var axios_1 = require("axios");
+var url = process.env.SLACK_WEBHOOK_URL;
+var pr = JSON.parse(process.env.PULL_REQUEST);
 
 // Check PR data
-var prNum = pr.number || 0
-var prTitle = pr.title || "Title missing"
-var prUrl = pr.html_url || "https://github.com"
-var prBody = pr.body || "No description provided."
+var prNum = pr.number || 0;
+var prTitle = pr.title || "Title missing";
+var prUrl = pr.html_url || "https://github.com";
+var prBody = pr.body || "No description provided.";
 
 // Check PR priority
-var prLabels = (pr.labels || []).map(element => element.name)
-var priorities = { "High Priority": "🔴", "Medium Priority": "🟡", "Low Priority": "🟢" }
-var prPriority = prLabels.map(element => priorities[element] != undefined ? priorities[element] : "").filter((element) => element.length > 0)
-if (prPriority.length === 0) prPriority.push("⚪")
-var priority = prPriority.join(" ")
+var prLabels = (pr.labels || []).map((element) => element.name);
+var priorities = {
+    "Urgent Priority": "🔴",
+    "High Priority": "🟠",
+    "Medium Priority": "🟡",
+    "Low Priority": "🟢",
+};
+var prPriority = prLabels
+    .map((element) =>
+        priorities[element] != undefined ? priorities[element] : ""
+    )
+    .filter((element) => element.length > 0);
+if (prPriority.length === 0) prPriority.push("⚪");
+var priority = prPriority.join(" ");
 
 // Check PR Mentions
-var prReviewers = (pr.requested_reviewers || []).map(element => element.login)
-var idPairs = (process.env.GITHUB_SLACK_IDS || "").split(",").reduce((map, element) => {
-    var kv = element.split("=")
-    map[kv[0]] = kv[1]
-    return map
-}, {})
-var sendHereMention = process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : ""
-var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS ? process.env.SEND_GROUP_ID_MENTIONS.split(",").map(id => "<!subteam^" + id + ">").join(" ") : ""
-var sendUserIDMentions = prReviewers.map(reviewer => idPairs[reviewer] != undefined ? "<@" + idPairs[reviewer] + ">" : "").join(" ")
-var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions
+var prReviewers = (pr.requested_reviewers || []).map(
+    (element) => element.login
+);
+var idPairs = (process.env.GITHUB_SLACK_IDS || "")
+    .split(",")
+    .reduce((map, element) => {
+        var kv = element.split("=");
+        map[kv[0]] = kv[1];
+        return map;
+    }, {});
+var sendHereMention =
+    process.env.IS_SEND_HERE_MENTION.toLowerCase() === "true" ? "<!here>" : "";
+var sendGroupIDMentions = process.env.SEND_GROUP_ID_MENTIONS
+    ? process.env.SEND_GROUP_ID_MENTIONS.split(",")
+        .map((id) => "<!subteam^" + id + ">")
+        .join(" ")
+    : "";
+var sendUserIDMentions = prReviewers
+    .map((reviewer) =>
+        idPairs[reviewer] != undefined ? "<@" + idPairs[reviewer] + ">" : ""
+    )
+    .join(" ");
+var mentions = sendHereMention + sendUserIDMentions + sendGroupIDMentions;
 
 // Check PR fork
-var compareBranchOwner = pr.head.repo.owner.login
-var compareBranchName = pr.head.ref
-var baseBranchOwner = pr.base.repo.owner.login
-var baseBranchName = pr.base.ref
-var prFromFork = process.env.IS_PR_FROM_FORK
-var compareBranchText = prFromFork === "true" ? compareBranchOwner + ":" + compareBranchName : compareBranchName
-var baseBranchText = prFromFork === "true" ? baseBranchOwner + ":" + baseBranchName : baseBranchName
+var compareBranchOwner = pr.head.repo.owner.login;
+var compareBranchName = pr.head.ref;
+var baseBranchOwner = pr.base.repo.owner.login;
+var baseBranchName = pr.base.ref;
+var prFromFork = process.env.IS_PR_FROM_FORK;
+var compareBranchText =
+    prFromFork === "true"
+        ? compareBranchOwner + ":" + compareBranchName
+        : compareBranchName;
+var baseBranchText =
+    prFromFork === "true"
+        ? baseBranchOwner + ":" + baseBranchName
+        : baseBranchName;
 
 // Check PR author
-var authorName = pr.user.login || "Unknown user"
-var authorIconUrl = pr.user.avatar_url
-var author = idPairs[authorName] != undefined ? "<@" + idPairs[authorName] + ">" : authorName
+var authorName = pr.user.login || "Unknown user";
+var authorIconUrl = pr.user.avatar_url;
+var author =
+    idPairs[authorName] != undefined
+        ? "<@" + idPairs[authorName] + ">"
+        : authorName;
 
 //Priority is pretty > compact > normal
-var makePretty = process.env.MAKE_PRETTY.toLowerCase() === "true"
-var makeCompact = process.env.MAKE_COMPACT.toLowerCase() === "true"
+var makePretty = process.env.MAKE_PRETTY.toLowerCase() === "true";
+var makeCompact = process.env.MAKE_COMPACT.toLowerCase() === "true";
 
-console.log("IDPAIRS: " + JSON.stringify(idPairs))
-console.log("REVIEWERS: " + prReviewers)
-console.log("LABELS: " + prLabels)
-console.log("PRIORITY: " + priority)
-console.log("MENTIONS: " + mentions)
+console.log("IDPAIRS: " + JSON.stringify(idPairs));
+console.log("REVIEWERS: " + prReviewers);
+console.log("LABELS: " + prLabels);
+console.log("PRIORITY: " + priority);
+console.log("MENTIONS: " + mentions);
 
 if (makePretty) {
     var message = {
@@ -65,8 +95,21 @@ if (makePretty) {
                         block_id: "commit_title",
                         text: {
                             type: "mrkdwn",
-                            text: priority + " *<" + prUrl + "|" + prTitle + ">* #" + prNum + " from *" + compareBranchText + "* to *" + baseBranchText + "*." + mentions
-                        }
+                            text:
+                                priority +
+                                " *<" +
+                                prUrl +
+                                "|" +
+                                prTitle +
+                                ">* #" +
+                                prNum +
+                                " from *" +
+                                compareBranchText +
+                                "* to *" +
+                                baseBranchText +
+                                "*." +
+                                mentions,
+                        },
                     },
                     {
                         type: "context",
@@ -75,13 +118,13 @@ if (makePretty) {
                             {
                                 type: "image",
                                 image_url: authorIconUrl,
-                                alt_text: "images"
+                                alt_text: "images",
                             },
                             {
                                 type: "mrkdwn",
-                                text: authorName
-                            }
-                        ]
+                                text: authorName,
+                            },
+                        ],
                     },
                     {
                         type: "actions",
@@ -91,22 +134,21 @@ if (makePretty) {
                                 text: {
                                     type: "plain_text",
                                     text: "See Pull Request",
-                                    emoji: true
+                                    emoji: true,
                                 },
                                 value: prTitle,
                                 url: prUrl,
                                 action_id: "actionId-0",
-                                style: "primary"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-    axios_1["default"].post(url, message)
-}
-else if (makeCompact) {
+                                style: "primary",
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    };
+    axios_1["default"].post(url, message);
+} else if (makeCompact) {
     var text = [
         priority,
         mentions,
@@ -116,21 +158,21 @@ else if (makeCompact) {
         "to",
         "*" + baseBranchText + "*",
         "opened by",
-        author
-    ].join(" ")
+        author,
+    ].join(" ");
     var message = {
         blocks: [
             {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: text
-                }
-            }
-        ]
-    }
-    console.log("TEXT: " + text)
-    axios_1["default"].post(url, message)
+                    text: text,
+                },
+            },
+        ],
+    };
+    console.log("TEXT: " + text);
+    axios_1["default"].post(url, message);
 } else {
     var message = {
         blocks: [
@@ -138,41 +180,41 @@ else if (makeCompact) {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: priority + " " + mentions + "*<" + prUrl + "|" + prTitle + ">*"
+                    text: priority + " " + mentions + "*<" + prUrl + "|" + prTitle + ">*",
                 },
                 accessory: {
                     type: "image",
                     image_url: authorIconUrl,
-                    alt_text: "github icon"
+                    alt_text: "github icon",
                 },
                 fields: [
                     {
                         type: "mrkdwn",
-                        text: "*Author*\n" + authorName
+                        text: "*Author*\n" + authorName,
                     },
                     {
                         type: "mrkdwn",
-                        text: "*Base branch*\n" + baseBranchText
+                        text: "*Base branch*\n" + baseBranchText,
                     },
                     {
                         type: "mrkdwn",
-                        text: "*Pull request number*\n#" + prNum
+                        text: "*Pull request number*\n#" + prNum,
                     },
                     {
                         type: "mrkdwn",
-                        text: "*Compare branch*\n" + compareBranchText
+                        text: "*Compare branch*\n" + compareBranchText,
                     },
-                ]
+                ],
             },
             {
                 type: "section",
                 text: {
                     type: "plain_text",
                     text: prBody,
-                    emoji: true
-                }
+                    emoji: true,
+                },
             },
-        ]
-    }
-    axios_1["default"].post(url, message)
+        ],
+    };
+    axios_1["default"].post(url, message);
 }
