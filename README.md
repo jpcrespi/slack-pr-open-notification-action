@@ -2,8 +2,6 @@
 
 Use GitHub Actions to notify Slack that a pull request has been opened.
 
-![example](https://raw.githubusercontent.com/jpcrespi/slack-pr-open-notification-action/images/example.png)
-
 ## Usage
 
 Add the following YAML to your new GitHub Actions workflow:
@@ -27,8 +25,6 @@ jobs:
         SEND_GROUP_ID_MENTIONS: GROUPIDDDD,GGGGROUPID
         IS_SEND_HERE_MENTION: false
         IS_PR_FROM_FORK: false
-        MAKE_PRETTY : false
-        MAKE_COMPACT : true
 ```
 
 ### Arguments
@@ -64,19 +60,3 @@ Whether to include the '@here' Slack mention when sending a message.
 **boolean (DEFAULT: false)**  
 Whether notifications should support PRs from forks. By default, only the branch name is listed when sending a message.  
 If set to 'true', it will add the branch owner in front of the branch name ('owner:branch' vs 'branch'). If this option is used, you may need to enable fork pull request workflows under your repository's Actions settings.
-
-![make_compact and is_pr_fork](https://raw.githubusercontent.com/jun3453/slack-pr-open-notification-action/images/make_compact_fork.png)
-
-#### MAKE_PRETTY
-
-**boolean (DEFAULT: false)**  
-Pretty prints the information. Adds a "See Pull Request" button.
-
-![make_pretty](https://raw.githubusercontent.com/jun3453/slack-pr-open-notification-action/images/make_pretty.png)
-
-#### MAKE_COMPACT
-
-**boolean (DEFAULT: false)**  
-Smaller visual footprint.
-
-![make_compact](https://raw.githubusercontent.com/jun3453/slack-pr-open-notification-action/images/make_compact.png)
